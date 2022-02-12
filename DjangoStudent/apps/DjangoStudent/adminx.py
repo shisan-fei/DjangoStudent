@@ -10,7 +10,6 @@ import sys,os
 sys.path.append("..")
 sys.path.append(os.path.dirname(__file__) + os.sep + '../')
 from xadmin import views
-
 from .models import Students,Class,Subjects,Teachers
 from xadmin.views.website import LoginView #导入LoginView模块，可以控制登录页面标题
 
@@ -20,15 +19,12 @@ class BaseSetting(object):
     enable_themes = True
     use_bootswatch = True
 
-
 # 全局设置
 class GlobalSetting(object):
     # 设置base_site.html的Title(页头名称)，再页面左上角显示
     site_title = 'slxy-学籍管理系统'
-
     # 设置base_site.html的Footer(页脚)，再页脚显示
     site_footer = 'slxy-学籍管理系统'
-
     # 设置菜单折叠
     menu_style = "accordion"
 
@@ -55,9 +51,36 @@ class StudentsAdmin(object):
     import_excel = True
     def post(self, request, *args, **kwargs):
         if 'excel' in request.FILES:
+            execl_file = request.FILES.get('excel')
+            files = open_workbook(filename=None, file_contents=request.FILES['excel'].read())
+            excel_into_model('course', 'Course', excel_file=files)
+            return HttpResponseRedirect('/xadmin/course/course')
             pass
         # 必须返回，不然报错（或者注释掉）
         return super(StudentsAdmin, self).post(request, *args, **kwargs)
+
+    def has_delete_permission(self, *args, **kwargs):
+        # 删除权限
+        if self.request.user.is_superuser:  # 管理员才能增加
+            return True
+        return False
+    def has_add_permission(self, *args, **kwargs):
+        if self.request.user.is_superuser:  # 管理员才能增加
+            return True
+        return False
+    def has_change_permission(self, *args, **kwargs):
+        if self.request.user.is_superuser:  # 管理员才能修改
+            self.readonly_fields = []  # 设置管理员可以修改所有字段
+            return True
+        return False
+    def queryset(self):
+        """当前用户只能看到自己的数据"""
+        user = self.request.user
+        if user.is_superuser:
+            # 管理员可以查看所有数据
+            return self.model._default_manager.get_queryset()
+        # 当前用户只能查看自己的数据
+        return self.model.objects.filter(user=user)
 
     # # 顺序排序
     # ordering = ('age', 'name',)
