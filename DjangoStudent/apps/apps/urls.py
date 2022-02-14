@@ -16,8 +16,9 @@ Including another URLconf
 # from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
-from django.urls import path
+from django.urls import path,include
 
+from django.conf.urls import url
 # xadmin的依赖
 import xadmin
 xadmin.autodiscover()
@@ -26,12 +27,13 @@ xadmin.autodiscover()
 from xadmin.plugins import xversion
 
 #from django.views.static import serve
-#from django.conf.urls import url
+
 xversion.register_models()
 
 urlpatterns = [
                   #path('admin/', xadmin.site.urls),
                   path(r'xadmin/', xadmin.site.urls),
+                  url(r'^login/', include('DjangoStudent.urls')),
                   #url(r'^media/(?P<path>.*)$',serve,{'document_root':settings.MEDIA_ROOT}),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

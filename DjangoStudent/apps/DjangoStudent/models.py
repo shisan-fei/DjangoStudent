@@ -60,7 +60,8 @@ class Students(models.Model):
                            choices=(('male', '男'),
                                     ('female', '女')))
 
-    age = models.IntegerField(verbose_name='年龄')
+    #age = models.IntegerField(verbose_name='年龄')
+    id_card = models.CharField(verbose_name='身份证号',max_length=20,default=' ')
 
     address = models.CharField(verbose_name='家庭住址',
                                max_length=250,
@@ -74,12 +75,12 @@ class Students(models.Model):
     # 定义外键
     class_name = models.ForeignKey('Class',
                                    verbose_name='所在班级',
-                                   on_delete=models.CASCADE,
-                                   blank=True)
+                                   on_delete=models.CASCADE)
+                                   #blank=True)
     # 声明多对多的关联关系
     subjects = models.ManyToManyField('Subjects',
-                                      verbose_name='选修课程',
-                                      blank=True)
+                                      verbose_name='选修课程')
+                                      #blank=True)
 
     def __str__(self):
         return self.name
