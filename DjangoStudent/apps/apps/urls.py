@@ -33,7 +33,8 @@ xversion.register_models()
 urlpatterns = [
                   #path('admin/', xadmin.site.urls),
                   path(r'xadmin/', xadmin.site.urls),
-                  url(r'^login/', include('DjangoStudent.urls')),
+                  url(r'', include('DjangoStudent.urls')),
+                  url(r'^student/', include('DjangoStudent.urls')),
                   #url(r'^media/(?P<path>.*)$',serve,{'document_root':settings.MEDIA_ROOT}),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
