@@ -9,7 +9,7 @@ def login(request):
         user = request.POST.get('username')
         pwd = request.POST.get('pwd')
         # print(user, pwd)
-        if user == 'root' and pwd == '123123':
+        if user == 'root' and pwd == '123':
             # 登录成功
             #return render(request, 'show_students.html')
             return redirect('/student/show_students/')
