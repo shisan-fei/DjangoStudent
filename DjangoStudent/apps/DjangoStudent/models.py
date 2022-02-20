@@ -40,6 +40,7 @@ class Class(models.Model):
 
 # 学生管理系统的学生表
 class Students(models.Model):
+    student_id = models.IntegerField(primary_key=True,verbose_name='学号',)
     name = models.CharField(verbose_name='学生姓名',
                             max_length=50)
 
