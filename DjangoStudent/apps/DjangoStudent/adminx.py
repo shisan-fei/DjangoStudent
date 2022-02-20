@@ -39,7 +39,7 @@ class LoginViewAdmin(LoginView):
 # Student显示设置,让这些字段可以显示在页面上
 class StudentsAdmin(object):
     # 列表中显示的字段
-    list_display = ('id', 'name', 'sex', 'id_card', 'address', 'enter_date', 'class_name','remarks')
+    list_display = ('student_id', 'name', 'sex', 'id_card', 'address', 'enter_date', 'class_name','remarks')
 
     # 内联复选框(选课系统可以上多选)
     style_fields = {'subjects': 'checkbox-inline', }
