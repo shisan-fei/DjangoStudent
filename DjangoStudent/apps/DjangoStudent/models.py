@@ -106,3 +106,15 @@ class Subjects(models.Model):
     class Meta:
         db_table = 't_subjects'
         verbose_name = verbose_name_plural = '课程信息'
+
+#学生登录信息表
+class User(models.Model):
+    student_id = models.CharField(primary_key=True,max_length=8,verbose_name='用户名',)
+    password = models.CharField(verbose_name='密码',max_length=10)
+
+    def __str__(self):
+        return self.student_id
+
+    class Meta:
+        db_table = 'user'
+        verbose_name = verbose_name_plural = '用户信息'
