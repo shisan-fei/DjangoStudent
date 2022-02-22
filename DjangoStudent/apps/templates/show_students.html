@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>show_student</title>
-    <link rel="stylesheet" href="/static/common.css">
+    <link rel="stylesheet" href="/static/login/common.css">
 </head>
 <body>
     <table class="gridtable" align="center">
@@ -14,11 +14,11 @@
             </tr>
             <tr>
              <!--    <th>ID</th><th>学生姓名</th><th>所属班级</th><th colspan="2">操作</th> -->
-               <th>ID</th><th>姓名</th><th>性别</th><th>身份证号</th><th>住址</th><th>入学时间</th><th>所在班级</th><th>备注</th>
+               <th>学号</th><th>姓名</th><th>性别</th><th>身份证号</th><th>住址</th><th>入学时间</th><th>所在班级</th><th>备注</th>
             </tr>
             {% for student in student_list %}
                 <tr>
-                    <td>{{ student.id}}</td>
+                    <td>{{ student.student_id}}</td>
                     <td>{{ student.name }}</td>
                     <td>{{ student.sex }}</td>
                     <td>{{ student.id_card }}</td>
