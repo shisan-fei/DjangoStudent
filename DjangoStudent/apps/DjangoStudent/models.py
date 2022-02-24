@@ -40,7 +40,7 @@ class Class(models.Model):
 
 # 学生管理系统的学生表
 class Students(models.Model):
-    student_id = models.IntegerField(primary_key=True,verbose_name='学号',)
+    student_id = models.CharField(primary_key=True,verbose_name='学号',max_length=8)
     name = models.CharField(verbose_name='学生姓名',
                             max_length=50)
 
@@ -84,7 +84,7 @@ class Students(models.Model):
                                       #blank=True)
 
     def __str__(self):
-        return self.name
+        return self.student_id
 
     class Meta:
         db_table = 't_students'
@@ -109,12 +109,14 @@ class Subjects(models.Model):
 
 #学生登录信息表
 class User(models.Model):
-    student_id = models.CharField(primary_key=True,max_length=8,verbose_name='用户名',)
+    #建立与学生表中学号的外键(一对一)，db_column='username'可以让字段会后不加_id
+    username = models.OneToOneField(Students, to_field="student_id",primary_key=True,
+                                    on_delete=models.CASCADE,verbose_name='用户名',db_column='username')
     password = models.CharField(verbose_name='密码',max_length=10)
 
     def __str__(self):
-        return self.student_id
+        return self.username
 
     class Meta:
-        db_table = 'user'
+        db_table = 't_user'
         verbose_name = verbose_name_plural = '用户信息'
