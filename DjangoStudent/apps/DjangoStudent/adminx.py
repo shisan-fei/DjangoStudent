@@ -39,13 +39,13 @@ class LoginViewAdmin(LoginView):
 # Student显示设置,让这些字段可以显示在页面上
 class StudentsAdmin(object):
     # 列表中显示的字段
-    list_display = ('student_id', 'name', 'sex', 'id_card', 'address', 'enter_date', 'class_name','remarks')
+    list_display = ('student_id', 'name', 'sex', 'id_card', 'address', 'enter_date', 'class_name','subjects','remarks')
 
     # 内联复选框(选课系统可以上多选)
     style_fields = {'subjects': 'checkbox-inline', }
 
     # 搜索(姓名, 班级, 课程),之后再页面中就可以根据字典进行搜索
-    search_fields = ('name', 'class_name__class_name', 'subjects__name',)
+    search_fields = ('student_id', 'class_name__class_name', 'subjects__name',)
 
     # 过滤器(按性别)
     list_filter = ('sex',)
@@ -121,6 +121,34 @@ class SubjectsAdmin(object):
 class TeachersAdmin(object):
     # 列表中显示的字段
     list_display = ('name',)
+    import_excel = True
+
+    def post(self, request, *args, **kwargs):
+        if 'excel' in request.FILES:
+            execl_file = request.FILES.get('excel')
+            files = open_workbook(filename=None, file_contents=request.FILES['excel'].read())
+            table = files.sheets()[0]
+            rows = table.nrows  # 获取行数
+            cols = table.ncols  # 获取列数
+            for r in range(1, rows):
+                name = table.cell(r, 0).value
+                try:
+                    a = Teachers.objects.filter(name=name)
+                    if a:
+                        continue
+                    elif name == None or name == '':
+                        continue
+                    else:
+                        teacer = Teachers()
+                        teacer.name = name
+                        teacer.save()
+                except:
+                    pass
+            # excel_into_model('course', 'Course', excel_file=files)
+            return HttpResponseRedirect('http://127.0.0.1:8000/xadmin/DjangoStudent/teachers/')
+            # pass
+        # 必须返回，不然报错（或者注释掉）
+        return super(TeachersAdmin, self).post(request, *args, **kwargs)
 
 
 

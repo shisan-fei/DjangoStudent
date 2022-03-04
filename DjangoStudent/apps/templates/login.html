@@ -1,3 +1,4 @@
+<!--
 <!DOCTYPE html>
 <html>
 <head>
@@ -20,5 +21,38 @@
     </form>
 
 
+</body>
+</html>-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Login</title>
+    <link rel="stylesheet" href="/static/login.css">
+</head>
+<body>
+    <div id="login-box">
+        <h1>Login</h1>
+        <form method="post" action="/login/">
+        <div class="form">
+            <div class="item">
+                <i class="fa fa-user" aria-hidden="true"></i>
+                <input type="text" placeholder="Username" name="Username">
+            </div>
+            <div class="item">
+                <i class="fa fa-key" aria-hidden="true"></i>
+                <input type="password" placeholder="Password" name="Password">
+            </div>
+        </div>
+
+        <dev>
+            <button type="submit" >Login</button>
+        </dev>
+            <dev>
+                <br/><a href="/update" >修改密码</a>
+            </dev>
+        </form>
+    </div>
 </body>
 </html>

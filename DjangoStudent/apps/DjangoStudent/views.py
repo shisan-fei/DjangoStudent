@@ -8,15 +8,13 @@ def login(request):
     if request.method == 'GET':
         return render(request, 'login.html')
     else:
-        userName = request.POST.get('username')
-        passWord = request.POST.get('pwd')
+        userName = request.POST.get('Username')
+        passWord = request.POST.get('Password')
         user_tup = (userName, passWord)
         sql = 'select * from t_user'
         all_users=model(sql)
         sql2 = '''select * from t_students where student_id={}'''.format(userName)
         user_info=model(sql2)
-        print(sql2)
-        print(user_info)
         has_user = 0
         i = 0
         while i < len(all_users):
