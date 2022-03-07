@@ -80,8 +80,8 @@ class Students(models.Model):
                                    #blank=True)
     # 声明多对多的关联关系
     subjects = models.ManyToManyField('Subjects',
-                                      verbose_name='选修课程')
-                                      #blank=True)
+                                      verbose_name='选修课程'
+                                      ,blank=True)
 
     def __str__(self):
         return self.student_id

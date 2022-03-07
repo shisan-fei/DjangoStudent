@@ -43,12 +43,16 @@ def save(request):
     sql1 = 'select * from t_user'
     all_users=model(sql1)  #执行SQL语句,查询到所有的用户存储到all_users中
     print('这里',all_users)
+    print(userName)
+    print(len(all_users))
     i = 0
     while i < len(all_users):
         if userName in all_users[i]:
+            print(all_users[i])
             ##表示该账号存在
             has_regiter = 1
         i += 1
+    print(has_regiter)
     if has_regiter == 0:
         return HttpResponse('该账号不存在,请联系管理员添加用户')
     else:
