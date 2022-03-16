@@ -9,6 +9,7 @@ table.gridtable {
 	border-color: #666666;
 	border-collapse: collapse;
 }
+
 table.gridtable th {
 	border-width: 1px;
 	padding: 8px;
@@ -43,4 +44,8 @@ form > input{
 
 .divForm{
     text-align: center;
+}
+body {
+    background-color: lightblue;
+
 }

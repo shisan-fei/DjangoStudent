@@ -54,7 +54,8 @@ def save(request):
         i += 1
     print(has_regiter)
     if has_regiter == 0:
-        return HttpResponse('该账号不存在,请联系管理员添加用户')
+        #return HttpResponse('该账号不存在,请联系管理员添加用户')
+        return render(request, 'update.html', {'msg': "该账号不存在,请联系管理员添加用户!!"})
     else:
         sql2 = '''update t_user set password = '{}' where username = '{}' '''.format( passWord,userName)
         model(sql2)

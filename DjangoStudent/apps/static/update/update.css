@@ -1,0 +1,33 @@
+#update{
+    width: 60%;
+    height: auto;
+    margin: 0 auto;
+    margin-top: 5%;
+    text-align: center;
+    background: #00000080;
+    padding: 20px 50px;
+}
+
+#update h1{
+    color: #ffffff;
+
+}
+
+#update .form{
+    margin-top: 50px;
+}
+
+#update span {
+    width: 180px;
+    font-size: 28px;
+    border: 0;
+    padding: 5px 10px;
+    background: #ffffff00;
+    color: #ffffff;
+}
+
+
+body {
+    background-color: lightblue;
+
+}

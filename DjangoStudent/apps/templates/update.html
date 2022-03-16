@@ -3,25 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <title>修改</title>
-    <link rel="stylesheet" href="/static/common.css">
+    <link rel="stylesheet" href="/static/update/update.css">
 </head>
 <body>
-<!--表单域，action用于将获取的到信息提交到后台地址-->
+    <div id="update">
+        <!--表单域，action用于将获取的到信息提交到后台地址-->
+        <form action="save" method="get">
+            <span>
+                用户:<input type="text"  name="username">
 
-<form action="save" method="get">
-    <span>
-        用户:<input type="text" name="username">
-    </span>
-    <br>
-    <span>
-        密码:<input type="password" name="password">
-    </span>
-    <br>
-    <span>
-        <input type="submit" name="submit1" value="修改">
-    </span>
-
-</form>
+            </span>
+            <br>
+            <span>
+                密码:<input type="password" name="password"><br/>
+                <font size="3" face="微软雅黑" color="#FF0000" >{{ msg }}</font>
+            </span>
+            <br>
+            <span>
+                <input type="submit" name="submit1" value="修改">
+            </span>
+            </form>
+        </div>
 </body>
 </html>
 
