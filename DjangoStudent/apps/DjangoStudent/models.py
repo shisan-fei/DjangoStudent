@@ -20,7 +20,7 @@ class Teachers(models.Model):
 
 # 学生管理系统的班级表
 class Class(models.Model):
-    class_name = models.CharField(verbose_name='班级',
+    class_name = models.CharField(primary_key=True,verbose_name='班级',
                                   max_length=100)
 
     # 声明一对一的关联关系

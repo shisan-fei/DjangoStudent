@@ -14,7 +14,8 @@ from .models import Students,Class,Subjects,Teachers
 from xadmin.views.website import LoginView #导入LoginView模块，可以控制登录页面标题
 
 from django.http import HttpResponseRedirect
-from xlrd import open_workbook
+from xlrd import open_workbook,xldate_as_tuple
+from datetime import  datetime
 
 # 主题设置
 class BaseSetting(object):
@@ -60,16 +61,45 @@ class StudentsAdmin(object):
             rows = table.nrows  #获取行数
             cols = table.ncols  #获取列数
             for r in range(1, rows):
-                name = table.cell(r, 0).value
-                sex = table.cell(r, 1).value
-                age = table.cell(r, 2).value
-                address = table.cell(r, 3).value
-                enter_date = table.cell(r, 4).value
-                remarks = table.cell(r, 5).value
-                Students.objects.create(name, sex, age,address, enter_date, remarks)
-            #excel_into_model('course', 'Course', excel_file=files)
+                student_id = table.cell(r, 0).value
+                name = table.cell(r, 1).value
+                sex = table.cell(r, 2).value
+                id_card = table.cell(r, 3).value
+                address = table.cell(r, 4).value
+                #enter_date = table.cell(r, 5).value   表格中日期不能直接取出显示，要使用date模块转换
+                enter_date = str(datetime(*xldate_as_tuple(table.cell(r, 5).value,0)))[0:10]
+                class_name = table.cell(r, 6).value
+                subject_name = table.cell(r, 7).value
+                remarks = table.cell(r, 8).value
+                try:
+                    a = Students.objects.filter(student_id=student_id)
+                    if a:
+                        continue
+                    elif student_id == None or student_id == '':
+                        continue
+                    else:
+                        students = Students()
+                        students.student_id = int(student_id)
+                        students.name = name
+                        if sex == '男':
+                            sex = 'male'
+                            students.sex = sex
+                        elif name == '女':
+                            name = 'female'
+                            students.sex = sex
+                        else:
+                            continue
+                        print('性别………………',sex)
+                        students.id_card=int(id_card)
+                        students.address=address
+                        students.enter_date=enter_date
+                        #外键字段插入时，先获取外键表中字段id
+                        students.class_name_id = Class.objects.filter(class_name=int(class_name)).first()
+                        students.remarks=str(remarks) if remarks else ' '
+                        students.save()
+                except:
+                    pass
             return HttpResponseRedirect('/xadmin/DjangoStudent/students/')
-            #pass
         # 必须返回，不然报错（或者注释掉）
         return super(StudentsAdmin, self).post(request, *args, **kwargs)
 
