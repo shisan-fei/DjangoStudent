@@ -115,7 +115,7 @@ class User(models.Model):
     password = models.CharField(verbose_name='密码',max_length=10)
 
     def __str__(self):
-        return self.username
+        return str(self.username)
 
     class Meta:
         db_table = 't_user'

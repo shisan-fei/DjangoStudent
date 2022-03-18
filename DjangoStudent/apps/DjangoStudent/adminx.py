@@ -10,7 +10,7 @@ import sys,os
 sys.path.append("..")
 sys.path.append(os.path.dirname(__file__) + os.sep + '../')
 from xadmin import views
-from .models import Students,Class,Subjects,Teachers
+from .models import Students,Class,Subjects,Teachers,User
 from xadmin.views.website import LoginView #导入LoginView模块，可以控制登录页面标题
 
 from django.http import HttpResponseRedirect
@@ -180,7 +180,9 @@ class TeachersAdmin(object):
         # 必须返回，不然报错（或者注释掉）
         return super(TeachersAdmin, self).post(request, *args, **kwargs)
 
-
+class UserAdmin(object):
+    # 列表中显示的字段
+    list_display = ('username', 'password',)
 
 
 xadmin.site.register(views.BaseAdminView, BaseSetting)
@@ -190,6 +192,7 @@ xadmin.site.register(Students, StudentsAdmin)
 xadmin.site.register(Class, ClassAdmin)
 xadmin.site.register(Subjects, SubjectsAdmin)
 xadmin.site.register(Teachers, TeachersAdmin)
+xadmin.site.register(User, UserAdmin)
 
 
 xadmin.site.register(LoginView, LoginViewAdmin)

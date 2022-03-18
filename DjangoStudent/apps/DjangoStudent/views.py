@@ -17,12 +17,14 @@ def login(request):
         user_info=model(sql2)
         has_user = 0
         i = 0
+        print(all_users)
         while i < len(all_users):
             if user_tup == all_users[i]:
                 has_user = 1
             i += 1
         if has_user == 1:
-            return redirect('/student/show_students/')
+            #return redirect('/student/show_students/',student_id=userName)
+            return show_students(request,student_id=userName)
         else:
             # 登陆失败
             return render(request, 'login.html', {'msg': "用户名或密码错误!!"})
@@ -46,6 +48,8 @@ def save(request):
     print(userName)
     print(len(all_users))
     i = 0
+    if all_users == None:
+        all_users = ()
     while i < len(all_users):
         if userName in all_users[i]:
             print(all_users[i])
@@ -62,13 +66,14 @@ def save(request):
         #return HttpResponse('修改成功')
         return render(request, 'update_success.html')
 
-def show_students(request):
+def show_students(request,student_id):
     """
     显示学生列表
     :param request:
     :return:
     """
-    student_list = Students.objects.all()
+    student_list = Students.objects.filter(student_id=student_id)
+    #student_list = Students.objects.all()
     return render(request, 'show_students.html', {'student_list': student_list})
 
 #封装一个mysql操作
