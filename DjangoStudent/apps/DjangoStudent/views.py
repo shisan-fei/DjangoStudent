@@ -17,7 +17,7 @@ def login(request):
         user_info=model(sql2)
         has_user = 0
         i = 0
-        print(all_users)
+        #print(all_users)
         while i < len(all_users):
             if user_tup == all_users[i]:
                 has_user = 1
@@ -44,9 +44,9 @@ def save(request):
     #SQL语句
     sql1 = 'select * from t_user'
     all_users=model(sql1)  #执行SQL语句,查询到所有的用户存储到all_users中
-    print('这里',all_users)
-    print(userName)
-    print(len(all_users))
+    #print('这里',all_users)
+    #print(userName)
+    #print(len(all_users))
     i = 0
     if all_users == None:
         all_users = ()
@@ -73,7 +73,7 @@ def show_students(request,student_id):
     :return:
     """
     student_list = Students.objects.filter(student_id=student_id)
-    #student_list = Students.objects.all()
+    print(student_list)
     return render(request, 'show_students.html', {'student_list': student_list})
 
 #封装一个mysql操作

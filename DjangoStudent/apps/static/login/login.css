@@ -9,7 +9,7 @@
 }
 
 #login-box h1{
-    color: #ffffff;
+    color: #27b7e7;
 }
 
 #login-box .form{
@@ -46,9 +46,15 @@
     border-radius: 15px;
 }
 
+#h1-box h1{
+    color: #055a3e;
+    text-align: center;
+    font-size: 48px;
+}
+
 body {
-    background: url(login_back.jpg);//放自己实际背景地址
-    background-size: 100% auto;//
-    //background-repeat: no-repeat; 这个属性是设置背景图不重叠，作者用了，我没用
+    background: url(login_back.jpg); /*放自己实际背景地址 */
+    background-size: 100% auto; 
+    /*background-repeat:no-repeat; //这个属性是设置背景图不重叠，作者用了，我没用 */
 
 }

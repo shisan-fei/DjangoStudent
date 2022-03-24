@@ -1,4 +1,5 @@
 import os
+from statistics import mode
 
 from django.db import models
 
@@ -51,7 +52,7 @@ class Students(models.Model):
                                          self.name,
                                          os.path.splitext(filename)[1]))
 
-    photo = models.ImageField(verbose_name='照片',
+    photo = models.ImageField(verbose_name='照片',    #blank 设置为True时，页面字段可以为空。
                               upload_to=get_photo,
                               blank=True,
                               null=True)
@@ -61,14 +62,23 @@ class Students(models.Model):
                            choices=(('male', '男'),
                                     ('female', '女')))
 
-    #age = models.IntegerField(verbose_name='年龄')
-    id_card = models.CharField(verbose_name='身份证号',max_length=20,default=' ')
+
+    id_card = models.CharField(verbose_name='身份证号',max_length=20)
 
     address = models.CharField(verbose_name='家庭住址',
                                max_length=250,
                                blank=True)
 
     enter_date = models.DateField(verbose_name='入学时间')
+    Date_of_birth  = models.DateField(verbose_name='出生日期')
+
+    Native_place = models.CharField(verbose_name="籍贯", max_length=20,)
+
+    Account_type = models.CharField(verbose_name="户口类型", max_length=10)
+
+    specialty = models.TextField(verbose_name='特长',blank=True)
+
+    Disciplinary_records =models.TextField(verbose_name='奖惩记录',blank=True)
 
     remarks = models.TextField(verbose_name='备注',
                                blank=True)
@@ -108,15 +118,17 @@ class Subjects(models.Model):
         verbose_name = verbose_name_plural = '课程信息'
 
 #学生登录信息表
+
 class User(models.Model):
-    #建立与学生表中学号的外键(一对一)，db_column='username'可以让字段会后不加_id
+   #建立与学生表中学号的外键(一对一)，db_column='username'可以让字段会后不加_id
     username = models.OneToOneField(Students, to_field="student_id",primary_key=True,
-                                    on_delete=models.CASCADE,verbose_name='用户名',db_column='username')
+                                    on_delete=models.CASCADE,verbose_name='用户名',db_column='username',default='')
     password = models.CharField(verbose_name='密码',max_length=10)
 
     def __str__(self):
-        return str(self.username)
+         return str(self.username)
 
     class Meta:
-        db_table = 't_user'
-        verbose_name = verbose_name_plural = '用户信息'
+         db_table = 't_user'
+         verbose_name = verbose_name_plural = '用户信息'
+

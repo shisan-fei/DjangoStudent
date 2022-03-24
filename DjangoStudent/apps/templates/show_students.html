@@ -2,36 +2,34 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>show_student</title>
+    <title>学籍信息</title>
     <link rel="stylesheet" href="/static/common.css">
 </head>
 <body bgcolor="lightblue" >
-    <table class="gridtable" align="center">
-        <tbody>
-            <tr>
-                <!-- <th colspan="3">学生列表</th> -->
-                <!--<th colspan="4"><a href="/student/add_student/">添加学生信息</a></th> -->
-            </tr>
-            <tr>
-             <!--    <th>ID</th><th>学生姓名</th><th>所属班级</th><th colspan="2">操作</th> -->
-               <th>学号</th><th>姓名</th><th>性别</th><th>身份证号</th><th>住址</th><th>入学时间</th><th>所在班级</th><th>备注</th>
-            </tr>
-            {% for student in student_list %}
+    <h1 align="center" >
+        学生个人学籍信息展示
+    </h1>
+    <div id="table-a">
+        <table class="gridtable" align="center">
+            <tbody>
                 <tr>
-                    <td>{{ student.student_id}}</td>
-                    <td>{{ student.name }}</td>
-                    <td>{{ student.sex }}</td>
-                    <td>{{ student.id_card }}</td>
-                    <td>{{ student.address }}</td>
-                    <td>{{ student.enter_date }}</td>
-                    <td>{{ student.class_name.class_name }}</td>
-                    <td>{{ student.remarks }}</td>
-<!--
-                    <td><a href="/student/alter_student/?nid={{ student.id }}">编辑</a></td>
-                    <td><a href="/student/delete_student/?nid={{ student.id }}">删除</a></td>  -->
+                   <th>学号</th><th>姓名</th><th>性别</th><th>身份证号</th>
+                   <th>住址</th><th>入学时间</th><th>所在班级</th><th>备注</th>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                {% for student in student_list %}
+                    <tr>
+                        <td>{{ student.student_id}}</td>
+                        <td>{{ student.name }}</td>
+                        <td>{{ student.sex }}</td>
+                        <td>{{ student.id_card }}</td>
+                        <td>{{ student.address }}</td>
+                        <td>{{ student.enter_date }}</td>
+                        <td>{{ student.class_name.class_name }}</td>
+                        <td>{{ student.remarks }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </body>
 </html>

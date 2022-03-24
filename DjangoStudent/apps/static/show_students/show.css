@@ -1,4 +1,16 @@
 body {
     background-color: lightblue;
+    bmargin-top: 45%;
+    text-align: center;
 
 }
+
+#table-a .th .td{
+    border: 1px solid black;
+}
+
+#table-a{
+  width: 100%;
+  border-collapse: collapse;
+}
+
