@@ -59,8 +59,8 @@ class Students(models.Model):
 
     sex = models.CharField(verbose_name='性别',
                            max_length=50,
-                           choices=(('male', '男'),
-                                    ('female', '女')))
+                           choices=(('男', '男'),
+                                    ('女', '女')))
 
 
     id_card = models.CharField(verbose_name='身份证号',max_length=20)

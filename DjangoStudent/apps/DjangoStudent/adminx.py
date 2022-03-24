@@ -3,6 +3,9 @@
 # @File : adminx.py
 # @Version : 1.0
 # @Description : xadmin数据模型,用以设置页面显示和关联数据库字段
+from re import A
+from site import USER_BASE
+from tkinter import N
 import xadmin
 import sys,os
 
@@ -40,7 +43,7 @@ class LoginViewAdmin(LoginView):
 # Student显示设置,让这些字段可以显示在页面上
 class StudentsAdmin(object):
     # 列表中显示的字段
-    list_display = ('student_id', 'name', 'sex', 'id_card', 'Date_of_birth', 'enter_date', 'class_name','Native_place','remarks')
+    list_display = ('student_id', 'name', 'sex', 'id_card', 'Date_of_birth', 'enter_date', 'class_name','Native_place','Account_type')
 
     # 内联复选框(选课系统可以上多选)
     style_fields = {'subjects': 'checkbox-inline', }
@@ -65,12 +68,19 @@ class StudentsAdmin(object):
                 name = table.cell(r, 1).value
                 sex = table.cell(r, 2).value
                 id_card = table.cell(r, 3).value
-                address = table.cell(r, 4).value
-                #enter_date = table.cell(r, 5).value   表格中日期不能直接取出显示，要使用date模块转换
+                Date_of_birth = str(datetime(*xldate_as_tuple(table.cell(r, 4).value,0)))[0:10]
                 enter_date = str(datetime(*xldate_as_tuple(table.cell(r, 5).value,0)))[0:10]
                 class_name = table.cell(r, 6).value
-                subject_name = table.cell(r, 7).value
-                remarks = table.cell(r, 8).value
+                Native_place = table.cell(r, 7).value
+                Account_type = table.cell(r, 8).value
+                address = table.cell(r, 9).value
+                specialty = table.cell(r, 10).value
+                Disciplinary_records = table.cell(r, 11).value
+                #enter_date = table.cell(r, 5).value   表格中日期不能直接取出显示，要使用date模块转换
+                #enter_date = str(datetime(*xldate_as_tuple(table.cell(r, 5).value,0)))[0:10]
+                #class_name = table.cell(r, 6).value
+                #subject_name = table.cell(r, 7).value
+                remarks = table.cell(r, 12).value
                 try:
                     a = Students.objects.filter(student_id=student_id)
                     if a:
@@ -81,20 +91,18 @@ class StudentsAdmin(object):
                         students = Students()
                         students.student_id = int(student_id)
                         students.name = name
-                        if sex == '男':
-                            sex = 'male'
-                            students.sex = sex
-                        elif name == '女':
-                            name = 'female'
-                            students.sex = sex
-                        else:
-                            continue
+                        students.sex = sex
                         #print('性别………………',sex)
                         students.id_card=int(id_card)
                         students.address=address
                         students.enter_date=enter_date
                         #外键字段插入时，先获取外键表中字段id
                         students.class_name_id = Class.objects.filter(class_name=int(class_name)).first()
+                        students.Date_of_birth = Date_of_birth
+                        students.Native_place = Native_place
+                        students.Account_type =Account_type
+                        students.specialty = specialty
+                        students.Disciplinary_records = Disciplinary_records
                         students.remarks=str(remarks) if remarks else ' '
                         students.save()
                 except:
@@ -183,6 +191,39 @@ class TeachersAdmin(object):
 class UserAdmin(object):
     # 列表中显示的字段
     list_display = ('username', 'password',)
+
+    import_excel = True
+    def post(self, request, *args, **kwargs):
+        if 'excel' in request.FILES:
+            execl_file = request.FILES.get('excel')
+            files = open_workbook(filename=None, file_contents=request.FILES['excel'].read())
+            table = files.sheets()[0]
+            rows = table.nrows  # 获取行数
+            cols = table.ncols  # 获取列数
+            for r in range(1, rows):
+                username = table.cell(r, 0).value
+                password = table.cell(r, 1).value
+                
+                print(username,int(password))
+                #try:
+                a = User.objects.filter(username=username)
+                if a:
+                    continue
+                elif username == None or username == '':
+                    continue
+                else:
+                    user = User()
+                    #user.username = username
+                    user.username = Students.objects.filter(student_id=int(username)).first()
+                    user.password = int(password)
+                    user.save()
+                #except:
+                #    pass
+            # excel_into_model('course', 'Course', excel_file=files)
+            return HttpResponseRedirect('http://127.0.0.1:8000/xadmin/DjangoStudent/user/')
+            # pass
+        # 必须返回，不然报错（或者注释掉）
+        return super(UserAdmin, self).post(request, *args, **kwargs)
 
 
 xadmin.site.register(views.BaseAdminView, BaseSetting)
