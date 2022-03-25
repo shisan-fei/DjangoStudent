@@ -2,6 +2,8 @@ from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from .models import Students
 import pymysql
+import hashlib
+from hashlib import md5
 # Create your views here.
 
 def login(request):
@@ -10,24 +12,29 @@ def login(request):
     else:
         userName = request.POST.get('Username')
         passWord = request.POST.get('Password')
-        user_tup = (userName, passWord)
-        sql = 'select * from t_user'
-        all_users=model(sql)
-        sql2 = '''select * from t_students where student_id={}'''.format(userName)
-        user_info=model(sql2)
-        has_user = 0
-        i = 0
-        #print(all_users)
-        while i < len(all_users):
-            if user_tup == all_users[i]:
-                has_user = 1
-            i += 1
-        if has_user == 1:
-            #return redirect('/student/show_students/',student_id=userName)
+        passWord_md5=pw_md5(passWord)
+        user_tup = (userName, passWord)         #页面输入的用户名，密码
+        user_tup_md = (userName, passWord_md5)  #页面输入的用户名，和加密后的密码
+        #sql = 'select * from t_user'
+        sql1 = '''select * from t_user where username='{}' and password='{}' '''.format(userName,passWord_md5)
+        sql2 = '''select * from t_user where username='{}' and password='{}' '''.format(userName,passWord)
+        user1=model(sql1)
+        user2=model(sql2)
+        if user1 == None: #初始密码没有加密 执行sql1后返回none
+            print(user2)
+            if user2 == None:
+                return render(request, 'login.html', {'msg': "用户名或密码错误!!"})
+            else:
+                if user_tup == user2[0]:   #直接判断执行sql2得到的原始用户名和密码与页面输入的是否相同
+                    return show_students(request,student_id=userName)
+                else:
+                    return render(request, 'login.html', {'msg': "用户名或密码错误!!"})
+        elif user_tup_md == user1[0]:  #user[0]就是数据库中用户名和加密的密码
             return show_students(request,student_id=userName)
         else:
-            # 登陆失败
+        # 登陆失败
             return render(request, 'login.html', {'msg': "用户名或密码错误!!"})
+
 
 #修改密码
 def update_pwd(request):
@@ -41,12 +48,10 @@ def save(request):
     #通过get()请求获取前段提交的数据
     userName = a.get('username')
     passWord = a.get('password')
+    passWord_md5=pw_md5(passWord)
     #SQL语句
     sql1 = 'select * from t_user'
     all_users=model(sql1)  #执行SQL语句,查询到所有的用户存储到all_users中
-    #print('这里',all_users)
-    #print(userName)
-    #print(len(all_users))
     i = 0
     if all_users == None:
         all_users = ()
@@ -61,7 +66,7 @@ def save(request):
         #return HttpResponse('该账号不存在,请联系管理员添加用户')
         return render(request, 'update.html', {'msg': "该账号不存在,请联系管理员添加用户!!"})
     else:
-        sql2 = '''update t_user set password = '{}' where username = '{}' '''.format( passWord,userName)
+        sql2 = '''update t_user set password = '{}' where username = '{}' '''.format(passWord_md5,userName)
         model(sql2)
         #return HttpResponse('修改成功')
         return render(request, 'update_success.html')
@@ -95,3 +100,14 @@ def model(sql):
             return None
     finally:
         db.close()
+
+#封装一个密码加密函数
+def pw_md5(password):
+    m=hashlib.md5()  #实例化MD5对象
+    new_pw=password.encode()  #不能直接对字符串加密，要先把字符串转换成bytes类型
+    m.update(new_pw)  #加密
+    return m.hexdigest() 
+
+
+#print(MD5('123'))
+#print(md5('111'))

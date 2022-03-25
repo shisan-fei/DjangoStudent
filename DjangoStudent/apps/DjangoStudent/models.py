@@ -127,7 +127,7 @@ class User(models.Model):
    #建立与学生表中学号的外键(一对一)，db_column='username'可以让字段会后不加_id
     username = models.OneToOneField(Students, to_field="student_id",primary_key=True,
                                     on_delete=models.CASCADE,verbose_name='用户名',db_column='username',default='')
-    password = models.CharField(verbose_name='密码',max_length=10)
+    password = models.CharField(verbose_name='密码',max_length=50)
 
     def __str__(self):
          return str(self.username)

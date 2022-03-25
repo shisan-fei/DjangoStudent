@@ -124,40 +124,6 @@ class SubjectsAdmin(object):
     # 列表中显示的字段
     list_display = ('name', 'score',)
 
-
-# Teachers显示设置
-#class TeachersAdmin(object):
-#    # 列表中显示的字段
-#    list_display = ('name',)
-#    import_excel = True
-#
-#    def post(self, request, *args, **kwargs):
-#        if 'excel' in request.FILES:
-#            execl_file = request.FILES.get('excel')
-#            files = open_workbook(filename=None, file_contents=request.FILES['excel'].read())
-#            table = files.sheets()[0]
-#            rows = table.nrows  # 获取行数
-#            cols = table.ncols  # 获取列数
-#            for r in range(1, rows):
-#                name = table.cell(r, 0).value
-#                try:
-#                    a = Teachers.objects.filter(name=name)
-#                    if a:
-#                        continue
-#                    elif name == None or name == '':
-#                        continue
-#                    else:
-#                        teacer = Teachers()
-#                        teacer.name = name
-#                        teacer.save()
-#                except:
-#                    pass
-#            # excel_into_model('course', 'Course', excel_file=files)
-#            return HttpResponseRedirect('http://127.0.0.1:8000/xadmin/DjangoStudent/teachers/')
-#            # pass
-#        # 必须返回，不然报错（或者注释掉）
-#        return super(TeachersAdmin, self).post(request, *args, **kwargs)
-
 class UserAdmin(object):
     # 列表中显示的字段
     list_display = ('username', 'password',)
