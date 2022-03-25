@@ -14,7 +14,7 @@
             <tbody>
                 <tr>
                    <th>学号</th><th>姓名</th><th>性别</th><th>身份证号</th>
-                   <th>住址</th><th>入学时间</th><th>所在班级</th><th>备注</th>
+                   
                 </tr>
                 {% for student in student_list %}
                     <tr>
@@ -22,11 +22,42 @@
                         <td>{{ student.name }}</td>
                         <td>{{ student.sex }}</td>
                         <td>{{ student.id_card }}</td>
-                        <td>{{ student.address }}</td>
+                        
+                    </tr>
+                <tr>
+                    <th>民族</th><th>出生日期</th><th>入学时间</th><th>所在班级</th>
+                </tr>
+                    <tr>
+                        <td>{{ student.national }}</td>
+                        <td>{{ student.Date_of_birth }}</td>   
                         <td>{{ student.enter_date }}</td>
                         <td>{{ student.class_name.class_name }}</td>
-                        <td>{{ student.remarks }}</td>
+                        
                     </tr>
+                <tr>
+                    <th>籍贯</th><th>户口类型</th><th colspan="2" >家庭住址</th>
+                </tr>
+                    <tr>
+                        <td>{{ student.Native_place }}</td>
+                        <td>{{ student.Account_type }}</td>
+                        <td colspan="2" >{{ student.address }}</td>
+                    </tr>
+                <tr>
+                    <th colspan="1" rowspan="1" >学籍变更记录</th>
+                    <td width="80" height="80" colspan="3">{{ student.Change_record }}</td>
+                </tr>
+                <tr>
+                    <th colspan="1" rowspan="1" >特长</th>
+                    <td width="80" height="80" colspan="3">{{ student.specialty }}</td>
+                </tr>
+                <tr>
+                    <th colspan="1" rowspan="1" >奖惩记录</th>
+                    <td width="80" height="80" colspan="3" >{{ student.Disciplinary_records }}</td>
+                </tr>
+                <tr>
+                    <th colspan="1" rowspan="1" >备注</th>
+                    <td width="80" height="80" colspan="3">{{ student.remarks }}</td>
+                </tr>
                 {% endfor %}
             </tbody>
         </table>

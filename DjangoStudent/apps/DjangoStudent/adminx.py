@@ -5,6 +5,7 @@
 # @Description : xadmin数据模型,用以设置页面显示和关联数据库字段
 from re import A
 from site import USER_BASE
+from sre_constants import CH_LOCALE
 from tkinter import N
 import xadmin
 import sys,os
@@ -13,7 +14,7 @@ import sys,os
 sys.path.append("..")
 sys.path.append(os.path.dirname(__file__) + os.sep + '../')
 from xadmin import views
-from .models import Students,Class,Subjects,Teachers,User
+from .models import Students,Class,Subjects,User
 from xadmin.views.website import LoginView #导入LoginView模块，可以控制登录页面标题
 
 from django.http import HttpResponseRedirect
@@ -43,7 +44,7 @@ class LoginViewAdmin(LoginView):
 # Student显示设置,让这些字段可以显示在页面上
 class StudentsAdmin(object):
     # 列表中显示的字段
-    list_display = ('student_id', 'name', 'sex', 'id_card', 'Date_of_birth', 'enter_date', 'class_name','Native_place','Account_type')
+    list_display = ('student_id', 'name', 'sex', 'id_card', 'national','Native_place','Account_type','Date_of_birth', 'enter_date', 'class_name',)
 
     # 内联复选框(选课系统可以上多选)
     style_fields = {'subjects': 'checkbox-inline', }
@@ -68,19 +69,17 @@ class StudentsAdmin(object):
                 name = table.cell(r, 1).value
                 sex = table.cell(r, 2).value
                 id_card = table.cell(r, 3).value
-                Date_of_birth = str(datetime(*xldate_as_tuple(table.cell(r, 4).value,0)))[0:10]
-                enter_date = str(datetime(*xldate_as_tuple(table.cell(r, 5).value,0)))[0:10]
-                class_name = table.cell(r, 6).value
-                Native_place = table.cell(r, 7).value
-                Account_type = table.cell(r, 8).value
-                address = table.cell(r, 9).value
-                specialty = table.cell(r, 10).value
-                Disciplinary_records = table.cell(r, 11).value
-                #enter_date = table.cell(r, 5).value   表格中日期不能直接取出显示，要使用date模块转换
-                #enter_date = str(datetime(*xldate_as_tuple(table.cell(r, 5).value,0)))[0:10]
-                #class_name = table.cell(r, 6).value
-                #subject_name = table.cell(r, 7).value
-                remarks = table.cell(r, 12).value
+                national = table.cell(r, 4).value
+                Native_place = table.cell(r, 5).value
+                Account_type = table.cell(r, 6).value
+                Date_of_birth = str(datetime(*xldate_as_tuple(table.cell(r, 7).value,0)))[0:10]
+                enter_date = str(datetime(*xldate_as_tuple(table.cell(r, 8).value,0)))[0:10]
+                class_name = table.cell(r, 9).value
+                address = table.cell(r, 10).value
+                Change_record = table.cell(r, 11).value
+                Disciplinary_records = table.cell(r, 12).value
+                specialty = table.cell(r, 13).value
+                remarks = table.cell(r, 14).value
                 try:
                     a = Students.objects.filter(student_id=student_id)
                     if a:
@@ -103,6 +102,8 @@ class StudentsAdmin(object):
                         students.Account_type =Account_type
                         students.specialty = specialty
                         students.Disciplinary_records = Disciplinary_records
+                        students.Change_record = Change_record
+                        students.national =national
                         students.remarks=str(remarks) if remarks else ' '
                         students.save()
                 except:
@@ -110,37 +111,6 @@ class StudentsAdmin(object):
             return HttpResponseRedirect('/xadmin/DjangoStudent/students/')
         # 必须返回，不然报错（或者注释掉）
         return super(StudentsAdmin, self).post(request, *args, **kwargs)
-
-    #def has_delete_permission(self, *args, **kwargs):
-    #    # 删除权限
-    #    if self.request.user.is_superuser:  # 管理员才能增加
-    #        return True
-    #    return False
-    #def has_add_permission(self, *args, **kwargs):
-    #    if self.request.user.is_superuser:  # 管理员才能增加
-    #        return True
-    #    return False
-    #def has_change_permission(self, *args, **kwargs):
-    #    if self.request.user.is_superuser:  # 管理员才能修改
-    #        self.readonly_fields = []  # 设置管理员可以修改所有字段
-    #        return True
-    #    return False
-    #def queryset(self):
-    #    """当前用户只能看到自己的数据"""
-    #    user = self.request.user
-    #    if user.is_superuser:
-    #        # 管理员可以查看所有数据
-    #        return self.model._default_manager.get_queryset()
-    #    # 当前用户只能查看自己的数据
-    #    return self.model.objects.filter(user=user)
-
-    # # 顺序排序
-    # ordering = ('age', 'name',)
-    # # 逆序排序，在前面加一个减号"-"，例如按年龄倒序排列
-    # ordering = ('-age',)
-
-    # 显示数据详情
-    # show_detail_fields = ['name']
 
 
 # Class显示设置
@@ -156,37 +126,37 @@ class SubjectsAdmin(object):
 
 
 # Teachers显示设置
-class TeachersAdmin(object):
-    # 列表中显示的字段
-    list_display = ('name',)
-    import_excel = True
-
-    def post(self, request, *args, **kwargs):
-        if 'excel' in request.FILES:
-            execl_file = request.FILES.get('excel')
-            files = open_workbook(filename=None, file_contents=request.FILES['excel'].read())
-            table = files.sheets()[0]
-            rows = table.nrows  # 获取行数
-            cols = table.ncols  # 获取列数
-            for r in range(1, rows):
-                name = table.cell(r, 0).value
-                try:
-                    a = Teachers.objects.filter(name=name)
-                    if a:
-                        continue
-                    elif name == None or name == '':
-                        continue
-                    else:
-                        teacer = Teachers()
-                        teacer.name = name
-                        teacer.save()
-                except:
-                    pass
-            # excel_into_model('course', 'Course', excel_file=files)
-            return HttpResponseRedirect('http://127.0.0.1:8000/xadmin/DjangoStudent/teachers/')
-            # pass
-        # 必须返回，不然报错（或者注释掉）
-        return super(TeachersAdmin, self).post(request, *args, **kwargs)
+#class TeachersAdmin(object):
+#    # 列表中显示的字段
+#    list_display = ('name',)
+#    import_excel = True
+#
+#    def post(self, request, *args, **kwargs):
+#        if 'excel' in request.FILES:
+#            execl_file = request.FILES.get('excel')
+#            files = open_workbook(filename=None, file_contents=request.FILES['excel'].read())
+#            table = files.sheets()[0]
+#            rows = table.nrows  # 获取行数
+#            cols = table.ncols  # 获取列数
+#            for r in range(1, rows):
+#                name = table.cell(r, 0).value
+#                try:
+#                    a = Teachers.objects.filter(name=name)
+#                    if a:
+#                        continue
+#                    elif name == None or name == '':
+#                        continue
+#                    else:
+#                        teacer = Teachers()
+#                        teacer.name = name
+#                        teacer.save()
+#                except:
+#                    pass
+#            # excel_into_model('course', 'Course', excel_file=files)
+#            return HttpResponseRedirect('http://127.0.0.1:8000/xadmin/DjangoStudent/teachers/')
+#            # pass
+#        # 必须返回，不然报错（或者注释掉）
+#        return super(TeachersAdmin, self).post(request, *args, **kwargs)
 
 class UserAdmin(object):
     # 列表中显示的字段
@@ -232,7 +202,7 @@ xadmin.site.register(views.CommAdminView, GlobalSetting)
 xadmin.site.register(Students, StudentsAdmin)
 xadmin.site.register(Class, ClassAdmin)
 xadmin.site.register(Subjects, SubjectsAdmin)
-xadmin.site.register(Teachers, TeachersAdmin)
+#xadmin.site.register(Teachers, TeachersAdmin)
 xadmin.site.register(User, UserAdmin)
 
 

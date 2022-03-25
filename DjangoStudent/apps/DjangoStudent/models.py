@@ -1,4 +1,5 @@
 import os
+from pyexpat import model
 from statistics import mode
 
 from django.db import models
@@ -7,16 +8,16 @@ from django.db import models
 
 
 # 学生管理系统的教师表
-class Teachers(models.Model):
-    name = models.CharField(verbose_name='教师姓名',
-                            max_length=50)
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        db_table = 't_teachers'
-        verbose_name = verbose_name_plural = '教师信息'
+#class Teachers(models.Model):
+#    name = models.CharField(verbose_name='教师姓名',
+#                            max_length=50)
+#
+#    def __str__(self):
+#        return self.name
+#
+#    class Meta:
+#        db_table = 't_teachers'
+#        verbose_name = verbose_name_plural = '教师信息'
 
 
 # 学生管理系统的班级表
@@ -25,11 +26,12 @@ class Class(models.Model):
                                   max_length=100)
 
     # 声明一对一的关联关系
-    headmaster = models.OneToOneField('Teachers',
-                                      verbose_name='班主任',
-                                      on_delete=models.CASCADE,
-                                      blank=True,
-                                      null=True)
+    #headmaster = models.OneToOneField('Teachers',
+    #                                  verbose_name='班主任',
+    #                                  on_delete=models.CASCADE,
+    #                                  blank=True,
+    #                                  null=True)
+    headmaster = models.CharField(verbose_name='班主任',max_length=10,blank=True,null=True)
 
     def __str__(self):
         return self.class_name
@@ -61,9 +63,9 @@ class Students(models.Model):
                            max_length=50,
                            choices=(('男', '男'),
                                     ('女', '女')))
-
-
     id_card = models.CharField(verbose_name='身份证号',max_length=20)
+
+    national = models.CharField(verbose_name="民族",max_length=5)
 
     address = models.CharField(verbose_name='家庭住址',
                                max_length=250,
@@ -72,9 +74,11 @@ class Students(models.Model):
     enter_date = models.DateField(verbose_name='入学时间')
     Date_of_birth  = models.DateField(verbose_name='出生日期')
 
-    Native_place = models.CharField(verbose_name="籍贯", max_length=20,)
+    Native_place = models.CharField(verbose_name="籍贯", max_length=20)
 
     Account_type = models.CharField(verbose_name="户口类型", max_length=10)
+
+    Change_record = models.TextField(verbose_name='学籍变更记录',blank=True)
 
     specialty = models.TextField(verbose_name='特长',blank=True)
 
@@ -131,4 +135,5 @@ class User(models.Model):
     class Meta:
          db_table = 't_user'
          verbose_name = verbose_name_plural = '用户信息'
+
 
