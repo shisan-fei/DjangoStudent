@@ -27,6 +27,7 @@ def login(request):
             else:
                 if user_tup == user2[0]:   #直接判断执行sql2得到的原始用户名和密码与页面输入的是否相同
                     return show_students(request,student_id=userName)
+                    #return redirect('show_students/',student_id=userName)
                 else:
                     return render(request, 'login.html', {'msg': "用户名或密码错误!!"})
         elif user_tup_md == user1[0]:  #user[0]就是数据库中用户名和加密的密码
@@ -48,28 +49,25 @@ def save(request):
     #通过get()请求获取前段提交的数据
     userName = a.get('username')
     passWord = a.get('password')
+    card_id = a.get('card_id')
     passWord_md5=pw_md5(passWord)
-    #SQL语句
-    sql1 = 'select * from t_user'
-    all_users=model(sql1)  #执行SQL语句,查询到所有的用户存储到all_users中
-    i = 0
-    if all_users == None:
-        all_users = ()
-    while i < len(all_users):
-        if userName in all_users[i]:
-            print(all_users[i])
-            ##表示该账号存在
-            has_regiter = 1
-        i += 1
-    print(has_regiter)
-    if has_regiter == 0:
-        #return HttpResponse('该账号不存在,请联系管理员添加用户')
-        return render(request, 'update.html', {'msg': "该账号不存在,请联系管理员添加用户!!"})
-    else:
-        sql2 = '''update t_user set password = '{}' where username = '{}' '''.format(passWord_md5,userName)
-        model(sql2)
-        #return HttpResponse('修改成功')
-        return render(request, 'update_success.html')
+    try:
+        sql = '''select * from t_user where username='{}' '''.format(userName)
+        user=model(sql)  #执行SQL语句,查询到的某某用户信息存储到user中
+        id_card_kv = Students.objects.filter(student_id=userName).values('id_card').first()  #取到的是一个字典，不用first()和values('id_card')的话是一个mysql数据集
+        id_card = id_card_kv['id_card']                 #从{'id_card': '245346546573567675'}里取身份证号
+        #print(user[0][0],id_card,card_id)
+        if user[0][0] == userName and id_card == card_id:
+                sql2 = '''update t_user set password = '{}' where username = '{}' '''.format(passWord_md5,userName)
+                model(sql2)
+             #return HttpResponse('修改成功')
+                return render(request, 'update_success.html')
+        else:
+            #return HttpResponse('该账号不存在,请联系管理员添加用户')
+            return render(request, 'update.html', {'msg': "账号或身份证号输入错误！"})
+    except:
+        return render(request, 'update.html', {'msg': "账号或身份证号输入错误！"})
+
 
 def show_students(request,student_id):
     """
@@ -109,5 +107,3 @@ def pw_md5(password):
     return m.hexdigest() 
 
 
-#print(MD5('123'))
-#print(md5('111'))

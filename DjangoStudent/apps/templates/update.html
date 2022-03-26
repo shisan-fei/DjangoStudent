@@ -10,13 +10,15 @@
         <!--表单域，action用于将获取的到信息提交到后台地址-->
         <form action="save" method="get">
             <span>
-                用户: <input type="text"  name="username">
+                用户: <input type="text"  name="username"><br/>
+                身份证号：<input type="text"  name="card_id"><br/>
+                新密码: <input type="password" name="password"><br/>
+                <font size="5" face="微软雅黑" color="#FF0000" >{{ msg }}</font>
 
             </span>
-            <br>
+            
             <span>
-                密码: <input type="password" name="password"><br/>
-                <font size="5" face="微软雅黑" color="#FF0000" >{{ msg }}</font>
+                
             </span>
             <br>
             <span>
