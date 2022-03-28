@@ -7,24 +7,26 @@ from django.db import models
 # Create your models here.
 
 
-# 学生管理系统的教师表
-#class Teachers(models.Model):
-#    name = models.CharField(verbose_name='教师姓名',
-#                            max_length=50)
-#
-#    def __str__(self):
-#        return self.name
-#
-#    class Meta:
-#        db_table = 't_teachers'
-#        verbose_name = verbose_name_plural = '教师信息'
-
-
-# 学生管理系统的班级表
-class Class(models.Model):
-    class_name = models.CharField(primary_key=True,verbose_name='班级',
+#学籍管理系统的专业表
+class College(models.Model):
+    name = models.CharField(verbose_name='学院名称',
                                   max_length=100)
+    director = models.CharField(verbose_name='主任',max_length=10,blank=True,null=True)                        
+    def __str__(self):
+        return self.name
 
+    class Meta:
+        db_table = 't_College'
+        verbose_name = verbose_name_plural = '学院'
+
+
+# 学籍管理系统的班级表
+class Class(models.Model):
+    class_name = models.CharField(verbose_name='班级',
+                                  max_length=100)
+    college_name = models.ForeignKey('College',
+                                   verbose_name='学院名称',
+                                   on_delete=models.CASCADE,default='')
     # 声明一对一的关联关系
     #headmaster = models.OneToOneField('Teachers',
     #                                  verbose_name='班主任',
@@ -41,7 +43,7 @@ class Class(models.Model):
         verbose_name = verbose_name_plural = '班级'
 
 
-# 学生管理系统的学生表
+# 学籍管理系统的学生表
 class Students(models.Model):
     student_id = models.CharField(primary_key=True,verbose_name='学号',max_length=8)
     name = models.CharField(verbose_name='学生姓名',
@@ -92,6 +94,8 @@ class Students(models.Model):
                                    verbose_name='所在班级',
                                    on_delete=models.CASCADE)
                                    #blank=True)
+    college = models.ForeignKey('College',verbose_name='所在学院',on_delete=models.CASCADE,default='')
+
     # 声明多对多的关联关系
     subjects = models.ManyToManyField('Subjects',
                                       verbose_name='选修课程'
@@ -102,7 +106,7 @@ class Students(models.Model):
 
     class Meta:
         db_table = 't_students'
-        verbose_name = verbose_name_plural = '学生信息'
+        verbose_name = verbose_name_plural = '学籍信息'
 
 
 # 学生管理系统的课程表
@@ -126,7 +130,7 @@ class Subjects(models.Model):
 class User(models.Model):
    #建立与学生表中学号的外键(一对一)，db_column='username'可以让字段会后不加_id
     username = models.OneToOneField(Students, to_field="student_id",primary_key=True,
-                                    on_delete=models.CASCADE,verbose_name='用户名',db_column='username',default='')
+                                    on_delete=models.CASCADE,verbose_name='用户名',db_column='username')
     password = models.CharField(verbose_name='密码',max_length=50)
 
     def __str__(self):

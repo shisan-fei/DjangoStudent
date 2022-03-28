@@ -14,7 +14,7 @@ import sys,os
 sys.path.append("..")
 sys.path.append(os.path.dirname(__file__) + os.sep + '../')
 from xadmin import views
-from .models import Students,Class,Subjects,User
+from .models import Students,Class,Subjects,User,College
 from xadmin.views.website import LoginView #导入LoginView模块，可以控制登录页面标题
 
 from django.http import HttpResponseRedirect
@@ -26,6 +26,7 @@ class BaseSetting(object):
     # 后台的主题功能，xadmin默认是关掉的，所以要打开
     enable_themes = True
     use_bootswatch = True
+    
 
 # 全局设置
 class GlobalSetting(object):
@@ -35,6 +36,7 @@ class GlobalSetting(object):
     site_footer = 'slxy-学籍管理系统'
     # 设置菜单折叠
     menu_style = "accordion"
+    
 
 #登录标题显示
 class LoginViewAdmin(LoginView):
@@ -51,6 +53,9 @@ class StudentsAdmin(object):
 
     # 搜索(姓名, 班级, 课程),之后再页面中就可以根据字典进行搜索
     search_fields = ('student_id', 'class_name__class_name', 'subjects__name',)
+    
+    #关闭书签
+    show_bookmarks = False
 
     # 过滤器(按性别)
     list_filter = ('sex',)
@@ -80,6 +85,9 @@ class StudentsAdmin(object):
                 Disciplinary_records = table.cell(r, 12).value
                 specialty = table.cell(r, 13).value
                 remarks = table.cell(r, 14).value
+                college = table.cell(r, 15).value
+                print(Class.objects.filter(class_name=class_name))
+                #print(Class.objects.get(class_name=int(class_name)))
                 try:
                     a = Students.objects.filter(student_id=student_id)
                     if a:
@@ -95,8 +103,9 @@ class StudentsAdmin(object):
                         students.id_card=int(id_card)
                         students.address=address
                         students.enter_date=enter_date
-                        #外键字段插入时，先获取外键表中字段id
-                        students.class_name_id = Class.objects.filter(class_name=int(class_name)).first()
+                        #外键字段插入时，先获取外键表中对应字段
+                        students.class_name = Class.objects.filter(class_name=str(class_name)).first()
+                        students.college = College.objects.filter(name=college).first()
                         students.Date_of_birth = Date_of_birth
                         students.Native_place = Native_place
                         students.Account_type =Account_type
@@ -116,17 +125,30 @@ class StudentsAdmin(object):
 # Class显示设置
 class ClassAdmin(object):
     # 列表中显示的字段
-    list_display = ('class_name',)
+    list_display = ('class_name','college_name')
+        #关闭书签
+    show_bookmarks = False
+
+#
+class CollegeAdmin(object):
+    # 列表中显示的字段
+    list_display = ('name',)
+        #关闭书签
+    show_bookmarks = False
 
 
 # Subject显示设置
 class SubjectsAdmin(object):
     # 列表中显示的字段
     list_display = ('name', 'score',)
+        #关闭书签
+    show_bookmarks = False
 
 class UserAdmin(object):
     # 列表中显示的字段
     list_display = ('username', 'password',)
+        #关闭书签
+    show_bookmarks = False
 
     import_excel = True
     def post(self, request, *args, **kwargs):
@@ -167,6 +189,7 @@ xadmin.site.register(views.CommAdminView, GlobalSetting)
 
 xadmin.site.register(Students, StudentsAdmin)
 xadmin.site.register(Class, ClassAdmin)
+xadmin.site.register(College, CollegeAdmin)
 xadmin.site.register(Subjects, SubjectsAdmin)
 #xadmin.site.register(Teachers, TeachersAdmin)
 xadmin.site.register(User, UserAdmin)
