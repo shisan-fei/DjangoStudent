@@ -36,7 +36,17 @@ class GlobalSetting(object):
     site_footer = 'slxy-学籍管理系统'
     # 设置菜单折叠
     menu_style = "accordion"
-    
+
+    #def get_site_menu(self):
+    #    return (
+    #        {'title': '学籍信息管理', 'menus': (
+    #            {'title': '学籍信息', 'url': self.get_model_url(Students, 'changelist')},
+    #            {'title': '学院信息', 'url': self.get_model_url(College, 'changelist')},)
+    #            {'title': '学籍信息管理', 'menus': (
+    #                {'title': '视频信息', 'url': self.get_model_url(Video, 'changelist')},
+    #            
+    #        )})
+#
 
 #登录标题显示
 class LoginViewAdmin(LoginView):
@@ -46,7 +56,7 @@ class LoginViewAdmin(LoginView):
 # Student显示设置,让这些字段可以显示在页面上
 class StudentsAdmin(object):
     # 列表中显示的字段
-    list_display = ('student_id', 'name', 'sex', 'id_card', 'national','Native_place','Account_type','Date_of_birth', 'enter_date', 'class_name',)
+    list_display = ('student_id', 'name', 'sex', 'id_card', 'national','Native_place','Account_type','Date_of_birth', 'enter_date', 'college',)
 
     # 内联复选框(选课系统可以上多选)
     style_fields = {'subjects': 'checkbox-inline', }
@@ -59,6 +69,13 @@ class StudentsAdmin(object):
 
     # 过滤器(按性别)
     list_filter = ('sex',)
+
+    def queryset(self):
+        qs = super(StudentsAdmin, self).queryset()
+        if not self.request.user.is_superuser:  # 不是超级用户可查看所有数据
+            college=College.objects.filter(name=self.request.user).first()
+            return qs.filter(college=college)  # 
+        super().queryset(self)
 
     # 导入excel插件
     import_excel = True
@@ -129,12 +146,26 @@ class ClassAdmin(object):
         #关闭书签
     show_bookmarks = False
 
+    def queryset(self):
+        qs = super(ClassAdmin, self).queryset()
+        if not self.request.user.is_superuser:  # 不是超级用户 
+            college=College.objects.filter(name=self.request.user).first()  #先找到输入用户在专业表中的位置
+            return qs.filter(college_name=college)   #只返回专业名和用户名相同的信息
+        super().queryset(self)
+
+
 #
 class CollegeAdmin(object):
     # 列表中显示的字段
-    list_display = ('name',)
+    list_display = ('name','director')
         #关闭书签
     show_bookmarks = False
+
+    def queryset(self):
+        qs = super(CollegeAdmin, self).queryset()
+        if not self.request.user.is_superuser:  # 不是超级用户可查看所有数据
+            return qs.filter(name=self.request.user)  # 
+        super().queryset(self)
 
 
 # Subject显示设置
